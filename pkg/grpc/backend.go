@@ -2,8 +2,8 @@ package grpc
 
 import (
 	"context"
-	"github.com/go-skynet/LocalAI/api/schema"
-	pb "github.com/go-skynet/LocalAI/pkg/grpc/proto"
+
+	pb "github.com/mudler/LocalAI/pkg/grpc/proto"
 	"google.golang.org/grpc"
 )
 
@@ -17,10 +17,10 @@ func NewClient(address string, parallel bool, wd WatchDog, enableWatchDog bool) 
 	if bc, ok := embeds[address]; ok {
 		return bc
 	}
-	return NewGrpcClient(address, parallel, wd, enableWatchDog)
+	return buildClient(address, parallel, wd, enableWatchDog)
 }
 
-func NewGrpcClient(address string, parallel bool, wd WatchDog, enableWatchDog bool) Backend {
+func buildClient(address string, parallel bool, wd WatchDog, enableWatchDog bool) Backend {
 	if !enableWatchDog {
 		wd = nil
 	}
@@ -37,10 +37,22 @@ type Backend interface {
 	Embeddings(ctx context.Context, in *pb.PredictOptions, opts ...grpc.CallOption) (*pb.EmbeddingResult, error)
 	Predict(ctx context.Context, in *pb.PredictOptions, opts ...grpc.CallOption) (*pb.Reply, error)
 	LoadModel(ctx context.Context, in *pb.ModelOptions, opts ...grpc.CallOption) (*pb.Result, error)
-	PredictStream(ctx context.Context, in *pb.PredictOptions, f func(s []byte), opts ...grpc.CallOption) error
+	PredictStream(ctx context.Context, in *pb.PredictOptions, f func(reply *pb.Reply), opts ...grpc.CallOption) error
 	GenerateImage(ctx context.Context, in *pb.GenerateImageRequest, opts ...grpc.CallOption) (*pb.Result, error)
 	TTS(ctx context.Context, in *pb.TTSRequest, opts ...grpc.CallOption) (*pb.Result, error)
-	AudioTranscription(ctx context.Context, in *pb.TranscriptRequest, opts ...grpc.CallOption) (*schema.Result, error)
+	SoundGeneration(ctx context.Context, in *pb.SoundGenerationRequest, opts ...grpc.CallOption) (*pb.Result, error)
+	AudioTranscription(ctx context.Context, in *pb.TranscriptRequest, opts ...grpc.CallOption) (*pb.TranscriptResult, error)
 	TokenizeString(ctx context.Context, in *pb.PredictOptions, opts ...grpc.CallOption) (*pb.TokenizationResponse, error)
 	Status(ctx context.Context) (*pb.StatusResponse, error)
+
+	StoresSet(ctx context.Context, in *pb.StoresSetOptions, opts ...grpc.CallOption) (*pb.Result, error)
+	StoresDelete(ctx context.Context, in *pb.StoresDeleteOptions, opts ...grpc.CallOption) (*pb.Result, error)
+	StoresGet(ctx context.Context, in *pb.StoresGetOptions, opts ...grpc.CallOption) (*pb.StoresGetResult, error)
+	StoresFind(ctx context.Context, in *pb.StoresFindOptions, opts ...grpc.CallOption) (*pb.StoresFindResult, error)
+
+	Rerank(ctx context.Context, in *pb.RerankRequest, opts ...grpc.CallOption) (*pb.RerankResult, error)
+
+	GetTokenMetrics(ctx context.Context, in *pb.MetricsRequest, opts ...grpc.CallOption) (*pb.MetricsResponse, error)
+
+	VAD(ctx context.Context, in *pb.VADRequest, opts ...grpc.CallOption) (*pb.VADResponse, error)
 }

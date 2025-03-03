@@ -1,28 +1,16 @@
 #!/bin/bash
 set -e
-##
-## A bash script installs the required dependencies of VALL-E-X and prepares the environment
-export PATH=$PATH:/opt/conda/bin
-export SHA=c0ddebaaaf8ffd1b3529c2bb654e650bce2f790f
 
-# Activate conda environment
-source activate transformers
+LIMIT_TARGETS="cublas"
+EXTRA_PIP_INSTALL_FLAGS="--no-build-isolation"
+EXLLAMA2_VERSION=c0ddebaaaf8ffd1b3529c2bb654e650bce2f790f
 
-echo $CONDA_PREFIX
+source $(dirname $0)/../common/libbackend.sh
 
-git clone https://github.com/turboderp/exllamav2 $CONDA_PREFIX/exllamav2
+installRequirements
 
-pushd $CONDA_PREFIX/exllamav2
+git clone https://github.com/turboderp/exllamav2 $MY_DIR/source
+pushd ${MY_DIR}/source && git checkout -b build ${EXLLAMA2_VERSION} && popd
 
-git checkout -b build $SHA
-
-# TODO: this needs to be pinned within the conda environments
-pip install -r requirements.txt
-
-popd
-
-cp -rfv $CONDA_PREFIX/exllamav2/* ./  
-
-if [ "$PIP_CACHE_PURGE" = true ] ; then
-    pip cache purge
-fi
+# This installs exllamav2 in JIT mode so it will compile the appropriate torch extension at runtime
+EXLLAMA_NOCOMPILE= uv pip install ${EXTRA_PIP_INSTALL_FLAGS} ${MY_DIR}/source/

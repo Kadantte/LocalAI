@@ -2,14 +2,17 @@
 /sources/
 __pycache__/
 *.a
+*.o
 get-sources
 prepare-sources
 /backend/cpp/llama/grpc-server
 /backend/cpp/llama/llama.cpp
+/backend/cpp/llama-*
+
+*.log
 
 go-ggml-transformers
 go-gpt2
-go-rwkv
 whisper.cpp
 /bloomz
 go-bert
@@ -21,6 +24,7 @@ local-ai
 !charts/*
 # prevent above rules from omitting the api/localai folder
 !api/localai
+!core/**/localai
 
 # Ignore models
 models/*
@@ -34,6 +38,22 @@ release/
 .idea
 
 # Generated during build
-backend-assets/
+backend-assets/*
+!backend-assets/.keep
 prepare
 /ggml-metal.metal
+docs/static/gallery.html
+
+# Protobuf generated files
+*.pb.go
+*pb2.py
+*pb2_grpc.py
+
+# SonarQube
+.scannerwork
+
+# backend virtual environments
+**/venv
+
+# per-developer customization files for the development container
+.devcontainer/customization/*

@@ -6,8 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/go-skynet/LocalAI/api/schema"
-	pb "github.com/go-skynet/LocalAI/pkg/grpc/proto"
+	pb "github.com/mudler/LocalAI/pkg/grpc/proto"
 	gopsutil "github.com/shirou/gopsutil/v3/process"
 )
 
@@ -42,6 +41,7 @@ func (llm *Base) Predict(opts *pb.PredictOptions) (string, error) {
 }
 
 func (llm *Base) PredictStream(opts *pb.PredictOptions, results chan string) error {
+	close(results)
 	return fmt.Errorf("unimplemented")
 }
 
@@ -53,11 +53,15 @@ func (llm *Base) GenerateImage(*pb.GenerateImageRequest) error {
 	return fmt.Errorf("unimplemented")
 }
 
-func (llm *Base) AudioTranscription(*pb.TranscriptRequest) (schema.Result, error) {
-	return schema.Result{}, fmt.Errorf("unimplemented")
+func (llm *Base) AudioTranscription(*pb.TranscriptRequest) (pb.TranscriptResult, error) {
+	return pb.TranscriptResult{}, fmt.Errorf("unimplemented")
 }
 
 func (llm *Base) TTS(*pb.TTSRequest) error {
+	return fmt.Errorf("unimplemented")
+}
+
+func (llm *Base) SoundGeneration(*pb.SoundGenerationRequest) error {
 	return fmt.Errorf("unimplemented")
 }
 
@@ -70,6 +74,26 @@ func (llm *Base) Status() (pb.StatusResponse, error) {
 	return pb.StatusResponse{
 		Memory: memoryUsage(),
 	}, nil
+}
+
+func (llm *Base) StoresSet(*pb.StoresSetOptions) error {
+	return fmt.Errorf("unimplemented")
+}
+
+func (llm *Base) StoresGet(*pb.StoresGetOptions) (pb.StoresGetResult, error) {
+	return pb.StoresGetResult{}, fmt.Errorf("unimplemented")
+}
+
+func (llm *Base) StoresDelete(*pb.StoresDeleteOptions) error {
+	return fmt.Errorf("unimplemented")
+}
+
+func (llm *Base) StoresFind(*pb.StoresFindOptions) (pb.StoresFindResult, error) {
+	return pb.StoresFindResult{}, fmt.Errorf("unimplemented")
+}
+
+func (llm *Base) VAD(*pb.VADRequest) (pb.VADResponse, error) {
+	return pb.VADResponse{}, fmt.Errorf("unimplemented")
 }
 
 func memoryUsage() *pb.MemoryUsageData {

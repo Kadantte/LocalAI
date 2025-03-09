@@ -31,14 +31,18 @@ icon = "info"
 </a>
 </p>
 
-[<img src="https://img.shields.io/badge/dockerhub-images-important.svg?logo=Docker">](https://hub.docker.com/r/localai/localai)
-[<img src="https://img.shields.io/badge/quay.io-images-important.svg?">](https://quay.io/repository/go-skynet/local-ai?tab=tags&tag=latest)
+<p align="center">
+<a href="https://hub.docker.com/r/localai/localai" target="blank">
+<img src="https://img.shields.io/badge/dockerhub-images-important.svg?logo=Docker" alt="LocalAI Docker hub"/>
+</a>
+<a href="https://quay.io/repository/go-skynet/local-ai?tab=tags&tag=latest" target="blank">
+<img src="https://img.shields.io/badge/quay.io-images-important.svg?" alt="LocalAI Quay.io"/>
+</a>
+</p>
 
-> 💡 Get help - [❓FAQ](https://localai.io/faq/) [❓How tos](https://io.midori-ai.xyz/howtos/) [💭Discussions](https://github.com/go-skynet/LocalAI/discussions) [💭Discord](https://discord.gg/uJAeKSAGDy)
->
-> [💻 Quickstart](https://localai.io/basics/getting_started/) [📣 News](https://localai.io/basics/news/) [ 🛫 Examples ](https://github.com/go-skynet/LocalAI/tree/master/examples/) [ 🖼️ Models ](https://localai.io/models/) [ 🚀 Roadmap ](https://github.com/mudler/LocalAI/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap)
-
-**LocalAI** is the free, Open Source OpenAI alternative. LocalAI act as a drop-in replacement REST API that's compatible with OpenAI API specifications for local inferencing. It allows you to run LLMs, generate images, audio (and not only) locally or on-prem with consumer grade hardware, supporting multiple model families and architectures. Does not require GPU. It is maintained by [mudler](https://github.com/mudler).
+<p align="center">
+<a href="https://trendshift.io/repositories/5539" target="_blank"><img src="https://trendshift.io/api/badge/repositories/5539" alt="mudler%2FLocalAI | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
+</p>
 
 <p align="center">
 <a href="https://twitter.com/LocalAI_API" target="blank">
@@ -47,6 +51,38 @@ icon = "info"
 <a href="https://discord.gg/uJAeKSAGDy" target="blank">
 <img src="https://dcbadge.vercel.app/api/server/uJAeKSAGDy?style=flat-square&theme=default-inverted" alt="Join LocalAI Discord Community"/>
 </a>
+</p>
+
+> 💡 Get help - [❓FAQ](https://localai.io/faq/) [💭Discussions](https://github.com/go-skynet/LocalAI/discussions) [💭Discord](https://discord.gg/uJAeKSAGDy)
+>
+> [💻 Quickstart](https://localai.io/basics/getting_started/) [🖼️ Models](https://models.localai.io/) [🚀 Roadmap](https://github.com/mudler/LocalAI/issues?q=is%3Aissue+is%3Aopen+label%3Aroadmap) [🥽 Demo](https://demo.localai.io) [🌍 Explorer](https://explorer.localai.io) [🛫 Examples](https://github.com/go-skynet/LocalAI/tree/master/examples/) 
+
+
+**LocalAI** is the free, Open Source OpenAI alternative. LocalAI act as a drop-in replacement REST API that's compatible with OpenAI API specifications for local inferencing. It allows you to run LLMs, generate images, audio (and not only) locally or on-prem with consumer grade hardware, supporting multiple model families and architectures. Does not require GPU. It is created and maintained by [Ettore Di Giacinto](https://github.com/mudler).
+
+
+## Start LocalAI
+
+Start the image with Docker to have a functional clone of OpenAI! 🚀:
+
+```bash
+docker run -p 8080:8080 --name local-ai -ti localai/localai:latest-aio-cpu
+# Do you have a Nvidia GPUs? Use this instead
+# CUDA 11
+# docker run -p 8080:8080 --gpus all --name local-ai -ti localai/localai:latest-aio-gpu-nvidia-cuda-11
+# CUDA 12
+# docker run -p 8080:8080 --gpus all --name local-ai -ti localai/localai:latest-aio-gpu-nvidia-cuda-12
+```
+
+Or just use the bash installer:
+
+```bash
+curl https://localai.io/install.sh | sh
+```
+
+See the [💻 Quickstart](https://localai.io/basics/getting_started/) for all the options and way you can run LocalAI!
+
+## What is LocalAI?
 
 In a nutshell:
 
@@ -61,8 +97,7 @@ LocalAI is focused on making the AI accessible to anyone. Any contribution, feed
 
 Note that this started just as a fun weekend project by [mudler](https://github.com/mudler) in order to try to create the necessary pieces for a full AI assistant like `ChatGPT`: the community is growing fast and we are working hard to make it better and more stable. If you want to help, please consider contributing (see below)!
 
-
-## 🚀 Features
+### 🚀 Features
 
 - 📖 [Text generation with GPTs](https://localai.io/features/text-generation/) (`llama.cpp`, `gpt4all.cpp`, ... [:book: and more](https://localai.io/model-compatibility/index.html#model-compatibility-table))
 - 🗣 [Text to Audio](https://localai.io/features/text-to-audio/)
@@ -72,7 +107,10 @@ Note that this started just as a fun weekend project by [mudler](https://github.
 - 🧠 [Embeddings generation for vector databases](https://localai.io/features/embeddings/)
 - ✍️ [Constrained grammars](https://localai.io/features/constrained_grammars/)
 - 🖼️ [Download Models directly from Huggingface ](https://localai.io/models/)
-- 🆕 [Vision API](https://localai.io/features/gpt-vision/)
+- 🥽 [Vision API](https://localai.io/features/gpt-vision/)
+- 💾 [Stores](https://localai.io/stores)
+- 📈 [Reranker](https://localai.io/features/reranker/)
+- 🆕🖧 [P2P Inferencing](https://localai.io/features/distribute/)
 
 ## Contribute and help
 
@@ -84,7 +122,24 @@ To help the project you can:
 
 ## 🌟 Star history
 
-[![LocalAI Star history Chart](https://api.star-history.com/svg?repos=go-skynet/LocalAI&type=Date)](https://star-history.com/#go-skynet/LocalAI&Date)
+[![LocalAI Star history Chart](https://api.star-history.com/svg?repos=mudler/LocalAI&type=Date)](https://star-history.com/#mudler/LocalAI&Date)
+
+## ❤️ Sponsors
+
+> Do you find LocalAI useful?
+
+Support the project by becoming [a backer or sponsor](https://github.com/sponsors/mudler). Your logo will show up here with a link to your website.
+
+A huge thank you to our generous sponsors who support this project covering CI expenses, and our [Sponsor list](https://github.com/sponsors/mudler):
+
+<p align="center">
+  <a href="https://www.spectrocloud.com/" target="blank">
+    <img width=200 src="https://github.com/user-attachments/assets/72eab1dd-8b93-4fc0-9ade-84db49f24962">
+  </a>
+  <a href="https://www.premai.io/" target="blank">
+    <img  width=200 src="https://github.com/mudler/LocalAI/assets/2420543/42e4ca83-661e-4f79-8e46-ae43689683d6"> <br>
+  </a>
+</p>
 
 ## 📖 License
 
@@ -110,7 +165,4 @@ LocalAI couldn't have been built without the help of great software already avai
 This is a community project, a special thanks to our contributors! 🤗
 <a href="https://github.com/go-skynet/LocalAI/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=go-skynet/LocalAI" />
-</a>
-<a href="https://github.com/go-skynet/LocalAI-website/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=go-skynet/LocalAI-website" />
 </a>

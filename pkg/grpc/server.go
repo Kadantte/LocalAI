@@ -6,7 +6,7 @@ import (
 	"log"
 	"net"
 
-	pb "github.com/go-skynet/LocalAI/pkg/grpc/proto"
+	pb "github.com/mudler/LocalAI/pkg/grpc/proto"
 	"google.golang.org/grpc"
 )
 
@@ -84,7 +84,19 @@ func (s *server) TTS(ctx context.Context, in *pb.TTSRequest) (*pb.Result, error)
 	if err != nil {
 		return &pb.Result{Message: fmt.Sprintf("Error generating audio: %s", err.Error()), Success: false}, err
 	}
-	return &pb.Result{Message: "Audio generated", Success: true}, nil
+	return &pb.Result{Message: "TTS audio generated", Success: true}, nil
+}
+
+func (s *server) SoundGeneration(ctx context.Context, in *pb.SoundGenerationRequest) (*pb.Result, error) {
+	if s.llm.Locking() {
+		s.llm.Lock()
+		defer s.llm.Unlock()
+	}
+	err := s.llm.SoundGeneration(in)
+	if err != nil {
+		return &pb.Result{Message: fmt.Sprintf("Error generating audio: %s", err.Error()), Success: false}, err
+	}
+	return &pb.Result{Message: "Sound Generation audio generated", Success: true}, nil
 }
 
 func (s *server) AudioTranscription(ctx context.Context, in *pb.TranscriptRequest) (*pb.TranscriptResult, error) {
@@ -131,10 +143,10 @@ func (s *server) PredictStream(in *pb.PredictOptions, stream pb.Backend_PredictS
 		done <- true
 	}()
 
-	s.llm.PredictStream(in, resultChan)
+	err := s.llm.PredictStream(in, resultChan)
 	<-done
 
-	return nil
+	return err
 }
 
 func (s *server) TokenizeString(ctx context.Context, in *pb.PredictOptions) (*pb.TokenizationResponse, error) {
@@ -164,6 +176,66 @@ func (s *server) Status(ctx context.Context, in *pb.HealthMessage) (*pb.StatusRe
 		return nil, err
 	}
 
+	return &res, nil
+}
+
+func (s *server) StoresSet(ctx context.Context, in *pb.StoresSetOptions) (*pb.Result, error) {
+	if s.llm.Locking() {
+		s.llm.Lock()
+		defer s.llm.Unlock()
+	}
+	err := s.llm.StoresSet(in)
+	if err != nil {
+		return &pb.Result{Message: fmt.Sprintf("Error setting entry: %s", err.Error()), Success: false}, err
+	}
+	return &pb.Result{Message: "Set key", Success: true}, nil
+}
+
+func (s *server) StoresDelete(ctx context.Context, in *pb.StoresDeleteOptions) (*pb.Result, error) {
+	if s.llm.Locking() {
+		s.llm.Lock()
+		defer s.llm.Unlock()
+	}
+	err := s.llm.StoresDelete(in)
+	if err != nil {
+		return &pb.Result{Message: fmt.Sprintf("Error deleting entry: %s", err.Error()), Success: false}, err
+	}
+	return &pb.Result{Message: "Deleted key", Success: true}, nil
+}
+
+func (s *server) StoresGet(ctx context.Context, in *pb.StoresGetOptions) (*pb.StoresGetResult, error) {
+	if s.llm.Locking() {
+		s.llm.Lock()
+		defer s.llm.Unlock()
+	}
+	res, err := s.llm.StoresGet(in)
+	if err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+func (s *server) StoresFind(ctx context.Context, in *pb.StoresFindOptions) (*pb.StoresFindResult, error) {
+	if s.llm.Locking() {
+		s.llm.Lock()
+		defer s.llm.Unlock()
+	}
+	res, err := s.llm.StoresFind(in)
+	if err != nil {
+		return nil, err
+	}
+	return &res, nil
+}
+
+func (s *server) VAD(ctx context.Context, in *pb.VADRequest) (*pb.VADResponse, error) {
+	if s.llm.Locking() {
+		s.llm.Lock()
+		defer s.llm.Unlock()
+	}
+	res, err := s.llm.VAD(in)
+	if err != nil {
+		return nil, err
+	}
 	return &res, nil
 }
 

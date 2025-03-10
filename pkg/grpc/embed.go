@@ -2,11 +2,10 @@ package grpc
 
 import (
 	"context"
-	"github.com/go-skynet/LocalAI/api/schema"
-	pb "github.com/go-skynet/LocalAI/pkg/grpc/proto"
+
+	pb "github.com/mudler/LocalAI/pkg/grpc/proto"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
-	"time"
 )
 
 var _ Backend = new(embedBackend)
@@ -36,7 +35,7 @@ func (e *embedBackend) LoadModel(ctx context.Context, in *pb.ModelOptions, opts 
 	return e.s.LoadModel(ctx, in)
 }
 
-func (e *embedBackend) PredictStream(ctx context.Context, in *pb.PredictOptions, f func(s []byte), opts ...grpc.CallOption) error {
+func (e *embedBackend) PredictStream(ctx context.Context, in *pb.PredictOptions, f func(reply *pb.Reply), opts ...grpc.CallOption) error {
 	bs := &embedBackendServerStream{
 		ctx: ctx,
 		fn:  f,
@@ -52,28 +51,12 @@ func (e *embedBackend) TTS(ctx context.Context, in *pb.TTSRequest, opts ...grpc.
 	return e.s.TTS(ctx, in)
 }
 
-func (e *embedBackend) AudioTranscription(ctx context.Context, in *pb.TranscriptRequest, opts ...grpc.CallOption) (*schema.Result, error) {
-	r, err := e.s.AudioTranscription(ctx, in)
-	if err != nil {
-		return nil, err
-	}
-	tr := &schema.Result{}
-	for _, s := range r.Segments {
-		var tks []int
-		for _, t := range s.Tokens {
-			tks = append(tks, int(t))
-		}
-		tr.Segments = append(tr.Segments,
-			schema.Segment{
-				Text:   s.Text,
-				Id:     int(s.Id),
-				Start:  time.Duration(s.Start),
-				End:    time.Duration(s.End),
-				Tokens: tks,
-			})
-	}
-	tr.Text = r.Text
-	return tr, err
+func (e *embedBackend) SoundGeneration(ctx context.Context, in *pb.SoundGenerationRequest, opts ...grpc.CallOption) (*pb.Result, error) {
+	return e.s.SoundGeneration(ctx, in)
+}
+
+func (e *embedBackend) AudioTranscription(ctx context.Context, in *pb.TranscriptRequest, opts ...grpc.CallOption) (*pb.TranscriptResult, error) {
+	return e.s.AudioTranscription(ctx, in)
 }
 
 func (e *embedBackend) TokenizeString(ctx context.Context, in *pb.PredictOptions, opts ...grpc.CallOption) (*pb.TokenizationResponse, error) {
@@ -84,13 +67,41 @@ func (e *embedBackend) Status(ctx context.Context) (*pb.StatusResponse, error) {
 	return e.s.Status(ctx, &pb.HealthMessage{})
 }
 
+func (e *embedBackend) StoresSet(ctx context.Context, in *pb.StoresSetOptions, opts ...grpc.CallOption) (*pb.Result, error) {
+	return e.s.StoresSet(ctx, in)
+}
+
+func (e *embedBackend) StoresDelete(ctx context.Context, in *pb.StoresDeleteOptions, opts ...grpc.CallOption) (*pb.Result, error) {
+	return e.s.StoresDelete(ctx, in)
+}
+
+func (e *embedBackend) StoresGet(ctx context.Context, in *pb.StoresGetOptions, opts ...grpc.CallOption) (*pb.StoresGetResult, error) {
+	return e.s.StoresGet(ctx, in)
+}
+
+func (e *embedBackend) StoresFind(ctx context.Context, in *pb.StoresFindOptions, opts ...grpc.CallOption) (*pb.StoresFindResult, error) {
+	return e.s.StoresFind(ctx, in)
+}
+
+func (e *embedBackend) Rerank(ctx context.Context, in *pb.RerankRequest, opts ...grpc.CallOption) (*pb.RerankResult, error) {
+	return e.s.Rerank(ctx, in)
+}
+
+func (e *embedBackend) VAD(ctx context.Context, in *pb.VADRequest, opts ...grpc.CallOption) (*pb.VADResponse, error) {
+	return e.s.VAD(ctx, in)
+}
+
+func (e *embedBackend) GetTokenMetrics(ctx context.Context, in *pb.MetricsRequest, opts ...grpc.CallOption) (*pb.MetricsResponse, error) {
+	return e.s.GetMetrics(ctx, in)
+}
+
 type embedBackendServerStream struct {
 	ctx context.Context
-	fn  func(s []byte)
+	fn  func(reply *pb.Reply)
 }
 
 func (e *embedBackendServerStream) Send(reply *pb.Reply) error {
-	e.fn(reply.GetMessage())
+	e.fn(reply)
 	return nil
 }
 
